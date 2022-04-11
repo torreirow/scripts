@@ -1,0 +1,598 @@
+^!m::
+loop 5 {
+WinActivate, ahk_exe excel.exe
+send, {esc}
+sleep, 100
+send, {ctrl down}c{ctrl up}
+sleep, 100
+WinActivate, ahk_exe Maconomy.exe
+sleep, 100
+send, {ctrl down}v{ctrl up}
+sleep, 100
+send, {ENTER}
+sleep, 500
+send, {tab}
+WinActivate, ahk_exe excel.exe
+sleep, 100
+Send, {right}
+}
+return
+
+^+j::
+url="https://jira.keylane.com/browse/%clipboard%"
+run, C:\Program Files\Mozilla Firefox\firefox.exe --new-tab %url%
+return
+
+
+Maconomy_setup_devops()
+{
+WinActivate, Deltek
+projectcode:= ["140021223-002","140021223-002","140021223-002","140030401-002","140021223-002","140021354"]
+taskcode:= ["Review KH tickets","Internal meetings", "Check_mk monitoring","Compensation","Internal meetings","Platform migration"]
+desccode:=["Reviews","Standup/Weekly/Retro","monitoring","Compensation","Support Junior Collegaues","Platform migration"]
+For x In projectcode
+{
+    project:= % projectcode[x]
+	task:= % taskcode[x]
+	description:= % desccode[x]
+Send, {TAB}{TAB}
+Sleep, 200
+Send, %project% {ENTER}
+Sleep, 500
+Send, {TAB}{TAB}{TAB}
+Sleep, 3000
+Send, %task%
+Sleep, 3000
+Send, {Enter}
+Sleep, 500
+Send, {TAB}
+Send, %description%
+Sleep, 200
+Send, {down}
+Sleep, 1000
+Sleep, 5000
+
+}
+
+}
+
+
+Maconomy_setup()
+{
+projects := ["140020977-001", "140020209-004", "140020564-001", "140020304-003", "140020398-001", "140021420-001", "140021419-001"]
+tasks := ["Support in fee" , "Incidents", "Upgrade - Deployments", "Server maintenance"]
+for each, project in projects
+ {
+  
+  for each, task in tasks
+   {
+Send, {TAB}{TAB}
+Sleep, 200
+Send, %project% {ENTER}
+Sleep, 500
+Send, {TAB}{TAB}{TAB}
+Sleep, 3000
+Send, %task%
+Sleep, 3000
+Send, {Enter}
+Sleep, 500
+Send, {TAB}
+Send, %task%
+Sleep, 200
+Send, {down}
+Sleep, 1000
+Sleep, 5000
+   }
+ }
+
+return
+}
+Maconomy_setup_single(projectid,task,description)
+{
+WinActivate, % "Deltek"
+Send, {TAB}{TAB}
+Sleep, 200
+Send, %project% {ENTER}
+Sleep, 500
+Send, {TAB}{TAB}{TAB}
+Sleep, 3000
+Send, %task%
+Sleep, 3000
+Send, {Enter}
+Sleep, 500
+Send, {TAB}
+Send, %description%
+Sleep, 200
+Send, {down}
+Sleep, 1000
+Sleep, 5000
+return
+}
+
+:*:;;maconsetup::
+Maconomy_setup()
+return
+
+:*:;;maconinit::
+Gui, Add, DropDownList, x22 y42 w210  vList1 ,Improvements|Reviews|Internal meetings|Monitoring|Other
+Gui, Add, Button, gOnSelect, ok
+Gui, show
+Return
+
+:*:;;macondevops::
+Maconomy_setup_devops()
+return
+
+OnSelect:
+Gui, Submit, nohide
+if (List1 = "Improvements") 
+{
+	projectid:= "140021223"
+	task:= "Improvements"
+	description:= "Improvent - "
+}
+
+if  (List1 = "Reviews") 
+{
+	projectid:= "140021223-002"
+	task:= "Reviews"
+	description:= "Reviews"
+}
+
+if (List1 = "Internal meetings") 
+{
+	projectid:= "140021223-002"
+	task:="Internal meetings"
+	description:="Internal meeting - "
+} 
+if (List1 = "Monitoring") 
+{
+	projectid:= "140021223-002"
+	task:= "Monitoring"
+	description:= "Monitoring"
+}
+
+Gui, Destroy
+Maconomy_setup_single(projectid, task, description)
+
+
+return
+
+;GuiClose:
+;Gui, Destroy
+;return
+
+
+return
+
+^!v::
+WinActivate, ahk_exe vlc.exe
+sleep, 200
+Send, {LAlt Down}a{LAlt Up}
+sleep, 500
+Send, m
+sleep, 200
+WinMinimize, ahk_exe vlc.exe
+return
+
+:*:;;maconadd::
+
+Maconomy_setup()
+return
+
+
+^+d::
+IfWinActive, Deltek Maconomy
+{
+loop 2
+{
+Send,+{TAB}
+}
+sleep, 1000
+Send, 140020337-010
+sleep, 500
+Send,{ENTER}
+loop 4
+{
+Send, {TAB}
+sleep, 500
+}
+send, ^v
+sleep,500
+send, +{TAB}:
+sleep, 500
+send, {LAlt Down}{Down}
+send, {LAlt Up}
+return
+}
+
+^!d::
+IfWinActive, Deltek Maconomy
+{
+    Send, Ditzo Hosting In Fee
+    sleep,2000
+    Send,{ENTER}
+    sleep,500
+    Send, {TAB}TAM Incident
+    sleep,2000
+    send, {ENTER}{TAB}
+    sleep,500
+    send, ^v
+}
+
+IfWinActive ahk_exe WINWORD.EXE
+{
+Send, %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min% ;
+return
+}
+
+IfWinActive, To Analysis - JIRA Keylane
+{
+ Send, %A_DD%/%A_MM%/%A_YYYY% %A_Hour%:%A_Min% ;
+}
+else
+{
+Send, %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min% ;
+}
+return
+
+
+IfWinActive ahk_exe WINWORD.EXE
+{
+Send, %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min% ;
+return
+}
+
+IfWinActive, Start Analysis - JIRA Keylane
+{
+ Send, %A_DD%/%A_MM%/%A_YYYY% %A_Hour%:%A_Min% ;
+}
+else
+{
+Send, %A_YYYY%-%A_MM%-%A_DD% %A_Hour%:%A_Min% ;
+}
+return
+
+
+
+^!a::
+;if WinActive ("Review Ok"){
+;send, ok
+;sleep, 500
+;loop 18{
+;send, {TAB}
+;}
+;sleep, 500
+;send, I've reviewd the actions in this ticket
+;send, {ENTER}
+;send, ticket reviewed --> ok
+;return
+;}
+if WinActive("Start Analysis") {
+send, {TAB}{TAB}
+sleep, 200
+send, wtoorren
+sleep, 200
+send, {TAB}{TAB}
+send, in-fee
+return
+}
+if WinActive("Priority Evaluated") {
+send, {Control Down}{ENTER}{Control Up}
+return
+}
+
+if WinActive("To be scheduled") {
+msgbox, schedule
+send, {TAB}{TAB}
+sleep, 200
+send, wtoorren
+sleep, 200
+send, {TAB}{TAB}
+send, in-fee
+return
+}
+
+if WinActive("Schedule - JIRA") || WinActive("Delegate"){
+MouseGetPos, xpos, ypos 
+InputBox, Prio, Prio, What is the Prio
+if ErrorLevel{
+    MsgBox, CANCEL
+	return
+	}
+
+ifInString, Prio, 4
+{
+AddMe=90
+}
+
+ifInString, Prio, 3
+{
+AddMe=10
+}
+
+ifInString, Prio, 2
+{
+AddMe=3
+}
+
+ifInString, Prio, 1
+{
+AddMe=1
+}
+  Gui, Add, MonthCal, vDate
+  Gui, Add, Button,Default,OK
+  MouseGetPos, xpos, ypos 
+  Gui, Show, x600,y400
+Return
+
+;return
+
+
+MouseGetPos, xpos, ypos 
+InputBox, Prio, Prio, What is the Prio
+if ErrorLevel{
+    MsgBox, CANCEL
+	return
+	}
+	
+
+ButtonOK:
+Gui,Submit
+
+
+Date += %AddMe%, Days
+;FormatTime, nDate, %Date%, yyyyMMddHHmm
+;FormatTime, nDate, %Date%, dd/MM/yyyy HH:mm
+FormatTime, nDate, %Date%, dd/MMM/yy
+
+;msgbox, %nDate%
+GuiControl, Hide, Date
+Gui Destroy
+Clipboard=%nDate%
+
+MsgBox, 0x104, Jira Analyse`n`n`n, Would you like to continue?
+    IfMsgBox, Yes
+	{
+        Send,x{TAB}2
+	Sleep, 500
+	Send, {TAB}
+	Sleep, 500
+	Send, %Clipboard%
+	Send, {TAB}{TAB}
+	Send, independent
+	Sleep, 500
+	Send, {Enter}
+	Send, {TAB}
+	Sleep, 500
+	Send, n	
+	loop 15{
+	send, {TAB}
+	}
+	
+}
+
+return
+}
+msgbox, No valid window available
+return
+
+#right::
+WinGet, mm, MinMax, A
+WinRestore, A
+WinGetPos, X, Y,,,A
+WinMove, A,, X+A_ScreenWidth, Y
+if(mm = 1){
+    WinMaximize, A
+}
+return
+
+#left::
+WinGet, mm, MinMax, A
+WinRestore, A
+WinGetPos, X, Y,,,A
+WinMove, A,, X-A_ScreenWidth, Y
+if(mm = 1){
+    WinMaximize, A
+}
+return
+
+:*:;;code::
+send, {{}code:java{}}
+send, {return}
+sleep, 100
+send, {Control Down}
+sleep, 100
+send, v
+sleep, 100
+send, {Control Up}
+send, {return}
+send, {{}code{}}
+return
+:*:;;creat::
+ifWinActive, Issue Navigator
+{
+send, order by created
+send, {return}
+}
+return
+
+:*:;;cdclog::
+InputBox, nroflogs, nroflogs, What is nr of logs you want to see?
+if ErrorLevel{
+    MsgBox, CANCEL
+	return
+	}
+	
+Send, list subscription events name AXONDM type target count %nroflogs%;
+return
+
+
+
+:*:;;cdclat::
+Send, monitor subscription latency; monitor replication;
+return
+
+:*:;;cdcendrep::
+Send,  end replication method scheduledEnd endType now;
+return
+
+:*:;;cdcconnect::
+sleep 1000
+Send, connect server username cdcuser password{SPACE}
+MsgBox, 0x104, Jira Analyse`n`n`n, Would you like to continue?
+    IfMsgBox, Yes
+        {
+         Send, %clipboard%
+         Send, {;}
+         keyWait, Return
+         sleep 500
+         send, list datastores;
+        }
+return
+
+:*:;;cdcsrc::
+sleep 500
+Send, connect datastore name %clipboard% context source;
+return
+
+:*:;;cdcmon::
+sleep 500
+Send, monitor replication;
+return
+
+:*:;;cdctgt::
+sleep 500
+Send, connect datastore name %clipboard% context target;
+return
+
+
+:*:;;rev::
+send, Ticket reviewed --> ok
+sleep, 1000
+send, {CTRL DOWN}{ENTER}{CTRL UP}
+sleep, 4000
+; send, {CTRL DOWN}w{CTRL UP}
+return
+
+
+:*:;;date::
+send,{ASC 96}date {ASC 43}{ASC 37}Y{ASC 37}m{ASC 37}d{ASC 45}{ASC 37}H{ASC 37}M{ASC 96}
+return
+
+
+:*:;;db2db::
+IfWinActive, BELINS Desktop
+{
+Send, db2 connect to qisdb;db2 set schema qis
+}
+else
+{
+Send, db2 connect to qis;db2 set schema qis
+}
+return
+
+:*:;;db2dm::
+IfWinActive, BELINS Desktop
+{
+Send, db2 connect to dmdb;db2 set schema qis
+}
+else
+{
+Send, db2 connect to qisdm;db2 set schema qisdm
+}
+return
+return
+
+:*:;;psef::
+send, ps -eo pid,lstart,cmd
+return
+
+F8::
+run, "C:\Users\wtoorren\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\KP-WT.lnk"
+WinActivate, wtoorren.kdbx - KeePass
+sleep, 1000
+sleep, 500
+Send, {TAB}{TAB}{TAB}
+Sleep, 500
+Send, Hosting ww		
+Sleep, 500
+Send, ^v
+;MsgBox % Text
+Sleep, 500
+ 
+Return
+
+F9::
+;WinActivate, ahk_class #32770
+WinWaitActive, ahk_class #32770,,2
+if ErrorLevel
+{
+Run, "C:\Program Files (x86)\Cisco\Cisco AnyConnect Secure Mobility Client\vpnui.exe"
+sleep, 2000
+}
+
+; Get the text from the control
+ControlGetText, MyText, Button1, ahk_class #32770
+
+; Display the result
+if (MyText =  "Connect")
+{
+;MsgBox, % MyText 
+;MsgBox, kantoor
+status := "In The Office"
+}
+if (MyText =  "Disconnect")
+{
+;MsgBox, % MyText 
+;MsgBox, thuis
+status := "At Home"
+}
+WinMinimize, ahk_class #32770
+sleep, 500
+WinGet TID, ID,ahk_exe Teams.exe
+WinActivate ahk_id %TID%
+Send ^+2
+sleep, 800
+send, {CTRL DOWN}1{CTRL UP}
+sleep, 800
+send, {CTRL DOWN}5{CTRL UP}
+sleep, 1500
+send, {SHIFT DOWN}
+loop 3 {
+send, {TAB}
+sleep, 800
+}
+Send, {SHIFT UP}
+
+sleep, 800
+send, {ENTER}
+sleep, 800
+send, {DOWN}
+sleep, 800
+send, {ENTER}
+sleep, 800
+Send, ^a
+Send, {DEL}
+;Send, @Home Office
+send, %status%
+loop 5 {
+send, {TAB}
+sleep, 800
+}
+Send, {ENTER}
+sleep, 500
+Send, {ESC}
+sleep, 500
+Send, {CTRL DOWN}2{CTRL UP}
+Process, close, vpnui.exe
+Return
+
+:*:;;squidcat::
+Send,{RAW}sed 's/^/echo "/; s/\([0-9]\{10\}\)/``date -d @\11``/; s/$/"/' | bash
+
+return
+
+:*:;;du::
+Send,{Raw}for dir in $(find . -mindepth 1 -maxdepth 1 -type d); do if ! mountpoint -q ${dir}; then du -xsh ${dir};fi;done
+return
