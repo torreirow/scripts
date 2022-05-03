@@ -1,0 +1,10 @@
+#EXTM3U
+#EXTINF:0,http://
+#EXTVLCOPT:network-caching=1000
+http:\\playerservices.streamtheworld.com\api\livestream-redirect\RFM.mp3
+#EXTINF:0,http://
+#EXTVLCOPT:network-caching=1000
+http:\\playerservices.streamtheworld.com\api\livestream-redirect\RFM.mp3
+mms://stream2.rfm.pt/RFM
+#EXTINF:0,RFM.mp3
+http://playerservices.streamtheworld.com/api/livestream-redirect/RFM.mp3
