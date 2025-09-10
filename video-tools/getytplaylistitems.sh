@@ -3,6 +3,7 @@
 reverseNumbering=true
 #playlistURL="https://www.youtube.com/playlist?list=PLGl3cau5E3unqx9uN3AKRqzhN-l4klWu_"
 listID=$1
+debugMode=$2
 
 
 if [[ -z ${listID} ]]; then
@@ -20,7 +21,8 @@ fi
 
 startVideoNr=$(gum input --prompt "Video number start: ")
 amountOfVideos=$(gum input --prompt "Amount of videos to download: ")
-reverseNumbering=$(gum choose yes no --selected "no")
+reverseNumbering=$(gum choose yes no --header "Reverse numbering?" --selected "no")
+videoOffset=$(gum input --prompt "Offset for video numbering: ")
 
 while [[ -z "$prefixOutputFilename" ]]; do
     prefixOutputFilename=$(gum input --prompt "Prefix for output filename: ")
@@ -55,7 +57,9 @@ echo "Downloading videos in range: $rangeVideoNrs"
 
 for num in $rangeVideoNrs; do
   echo "debug $num"
+  echo "debug offset: $videoOffset"
   unset outputNum
+
     if [[ $reverseNumbering == "yes" ]]; then
         # Bereken het juiste nummer in de lijst bij omgekeerde nummering
         echo "Omnummeren"
@@ -64,6 +68,16 @@ for num in $rangeVideoNrs; do
         echo "nummer behouden"
         outputNum=$num
     fi
+    if [[ -n ${videoOffset} ]]; then
+      num=$((num + videoOffset))
+      echo "debug downloadnum: $downloadNum"
+    fi
+
     echo "Download video $num and save it as  $outputNum"
+    if [[ -z ${debugMode} ]]; then
     yt-dlp --playlist-items "$num" "$playlistURL" -o "${prefixOutputFilename}-${outputNum}.webm"
+  else
+    echo "Debug mode enabled; not executing "
+    echo yt-dlp --playlist-items "$num" "$playlistURL" -o "${prefixOutputFilename}-${outputNum}.webm"
+    fi
 done
