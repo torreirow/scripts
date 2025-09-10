@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 reverseNumbering=true
 #playlistURL="https://www.youtube.com/playlist?list=PLGl3cau5E3unqx9uN3AKRqzhN-l4klWu_"
 listID=$1
