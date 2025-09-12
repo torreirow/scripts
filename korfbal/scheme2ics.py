@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import glob
 import csv
@@ -8,6 +7,7 @@ import tempfile
 from bs4 import BeautifulSoup
 from ics import Calendar, Event
 from datetime import datetime
+import pytz
 import argparse
 
 # -------------------------
@@ -109,6 +109,8 @@ try:
     # Stap 3: Maak ICS voor opgegeven team
     # -------------------------
     cal = Calendar()
+    tz = pytz.timezone("Europe/Amsterdam")
+
     for csv_file in csv_files:
         try:
             datum_str = os.path.basename(csv_file).replace("blok-", "").replace(".csv", "")
@@ -126,13 +128,13 @@ try:
                     continue
                 try:
                     tijd_obj = datetime.strptime(tijd, "%H:%M")
-                    start_datetime = datetime(
+                    start_datetime = tz.localize(datetime(
                         year=datum_obj.year,
                         month=datum_obj.month,
                         day=datum_obj.day,
                         hour=tijd_obj.hour,
                         minute=tijd_obj.minute
-                    )
+                    ))
                 except ValueError:
                     continue
                 event = Event()
