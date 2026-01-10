@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from ics import Calendar, Event
 from datetime import datetime
 import argparse
+from zoneinfo import ZoneInfo
 
 # -------------------------
 # Argument parser
@@ -17,6 +18,7 @@ parser = argparse.ArgumentParser(description="Van schema HTML naar ICS voor een 
 parser.add_argument("team", help="Teamnaam om te filteren")
 args = parser.parse_args()
 team_naam = args.team.lower()
+tz = ZoneInfo("Europe/Amsterdam")
 
 # -------------------------
 # Maak tijdelijke directory
@@ -63,7 +65,7 @@ try:
     # -------------------------
     # Stap 2: Parse blok*.html naar blok-YYYY-MM-DD.csv
     # -------------------------
-    current_year = datetime.now().year
+    current_year = "2026" #datetime.now().year
     maanden = {
         "januari": "01", "februari": "02", "maart": "03", "april": "04",
         "mei": "05", "juni": "06", "juli": "07", "augustus": "08",
@@ -131,7 +133,8 @@ try:
                         month=datum_obj.month,
                         day=datum_obj.day,
                         hour=tijd_obj.hour,
-                        minute=tijd_obj.minute
+                        minute=tijd_obj.minute,
+                        tzinfo=tz
                     )
                 except ValueError:
                     continue
