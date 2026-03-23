@@ -226,7 +226,71 @@ Voor verdere hulp:
 - Zigbee2MQTT Documentation: https://www.zigbee2mqtt.io/
 - Sonoff Firmware Updates: https://sonoff.tech/product-review/how-to-flash-the-firmware-for-sonoff-zigbee-3-0-usb-dongle-plus/
 
+## ✅ UPDATE: MIGRATIE GELUKT (na reboot)
+
+### Datum: 29 Januari 2026 (na reboot)
+
+Na een volledige server reboot is de migratie naar Zigbee2MQTT succesvol afgerond:
+
+**Belangrijkste wijziging:**
+- **Adapter type:** `zstack` in plaats van `ember/ezsp`
+- **Firmware:** Sonoff adapter had zstack firmware, niet ember
+- **Resultaat:** Alle apparaten succesvol gemigreerd
+
+**Nieuwe configuratie:**
+```yaml
+adapter: zstack
+port: /dev/serial/by-id/usb-Silicon_Labs_Sonoff_Zigbee_3.0_USB_Dongle_Plus_0001-if00-port0
+baudrate: 115200
+```
+
+**Status:**
+- ✅ Zigbee2MQTT online en werkend
+- ✅ Mosquitto MQTT broker actief (poort 1883, 9001)
+- ✅ Alle apparaten succesvol gedetecteerd
+- ✅ Frontend beschikbaar: https://zigbee2mqtt.toorren.net
+
+**Nieuwe netwerk settings (Zigbee2MQTT):**
+- Channel: 11
+- PAN ID: 6754 (0x1A62)
+- Extended PAN ID: [221,221,221,221,221,221,221,221]
+- Coordinator IEEE: 0x00124b0029dc09f4
+
+## ⚠️ TWEEDE INCIDENT: 23 Maart 2026
+
+### Probleem
+Na een nette `shutdown -h` om 08:20 en herstart om 17:00 waren alle IKEA Zigbee apparaten offline:
+- Alle 14 IKEA apparaten onbereikbaar
+- Zigbee2MQTT service draaide, maar dongle hing
+- Bridge status: offline
+- Alleen Tuya outdoor plug werkte nog
+
+### Root Cause (BEVESTIGD)
+**Identiek aan 29 januari:** USB adapter in "stuck" staat na shutdown/herstart.
+- Dongle geeft `resetInd` maar reageert niet op verdere commando's
+- Logt vast bij: `SREQ: SYS - version` (krijgt geen response)
+- Service restarts helpen NIET
+- Fysieke dongle reset helpt NIET
+
+### Oplossing
+**Volledige server reboot** om 22:07
+- Alle 17 devices kwamen automatisch terug online
+- Bridge state: online
+- Geen manual re-pairing nodig
+
+### Pattern Herkenning
+Dit is nu het **tweede incident** met exact hetzelfde probleem:
+1. **29 januari 2026:** USB adapter stuck na stroominderbreking → reboot opgelost
+2. **23 maart 2026:** USB adapter stuck na shutdown/restart → reboot opgelost
+
+**Conclusie:** Server shutdown gevolgd door herstart triggert USB dongle hang. Enige oplossing: volledige server reboot.
+
+### Documentatie
+Zie voor gedetailleerde troubleshooting: `ZIGBEE_TROUBLESHOOTING_2026-03-23.md`
+
 ## Datum & Status
-- **Datum:** 29 Januari 2026
-- **Status:** Wachtend op reboot om USB adapter te resetten
-- **Volgende actie:** Na reboot ZHA configureren met backup restore
+- **Originele datum:** 29 Januari 2026
+- **Status:** ✅ OPGELOST - Zigbee2MQTT succesvol werkend
+- **Laatste update:** 23 Maart 2026
+- **Huidige status:** Alle 17 apparaten online
+- **Bekend issue:** USB dongle hang na server shutdown (vereist reboot)
